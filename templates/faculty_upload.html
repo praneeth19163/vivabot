@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Upload</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .home-btn {
+        display: inline-block;
+        padding: 10px 15px;
+        background-color: #007BFF;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+
+    .home-btn:hover {
+        background-color: #0056b3;
+    }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 50%;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/faculty_dashboard" class="home-btn">Back</a>
+        <h1>Upload Questions PDF</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="/faculty_upload" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="subject">Select Subject:</label>
+                <select name="subject" id="subject" class="form-control" required>
+                    <option value="">-- Select Subject --</option>
+                    <option value="ml">ML</option>
+                    <option value="bda_cc">BDA_CC</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pdf_file">Upload PDF:</label>
+                <input type="file" name="pdf_file" id="pdf_file" class="form-control" accept=".pdf" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+    </div>
+</body>
+</html>

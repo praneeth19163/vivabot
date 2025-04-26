@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Page</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #e8f1f2, #d4e7e8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #333;
+    }
+
+    .container {
+      text-align: center;
+      background: #ffffff;
+      padding: 40px 30px;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #3a3a3a;
+    }
+
+    /* Buttons */
+    .button-group {
+      margin-top: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 25px;
+      margin: 15px;
+      font-size: 1rem;
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(135deg, #4a90e2, #357ab8);
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #357ab8, #4a90e2);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* Flash Message Styles */
+    .flash-messages {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      max-width: 90%;
+      display: none;
+    }
+
+    .flash-message {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      font-size: 16px;
+      text-align: center;
+      font-weight: 500;
+      color: #fff;
+    }
+
+    .flash-message.success {
+      background-color: #28a745;
+    }
+
+    .flash-message.danger {
+      background-color: #dc3545;
+    }
+
+    .flash-message.warning {
+      background-color: #ffc107;
+      color: #333;
+    }
+
+    .flash-message.info {
+      background-color: #17a2b8;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      width: 140px;
+      height: 45px;
+      text-align: center;
+      line-height: 45px;
+      border-radius: 5px;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px) scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+  </div>
+
+  <div class="container">
+    <h1>Welcome to Vivabot</h1>
+    <div class="button-group">
+      <a href="/register" class="btn">Register</a>
+      <a href="/dashboard" class="btn">Take Viva</a>
+      <a href="/faculty_dashboard" class="btn">Faculty</a>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+        const flashMessages = document.querySelector('.flash-messages');
+        if (flashMessages && flashMessages.children.length > 0) {
+            flashMessages.style.display = 'block';
+            setTimeout(function() {
+                flashMessages.style.display = 'none';
+            }, 5000); 
+        }
+    }
+  </script>
+</body>
+</html>

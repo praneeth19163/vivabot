@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Viva</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .checkbox-group {
+            margin: 20px 0;
+        }
+
+        .start-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .start-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ready to Start the Viva?</h1>
+        <form action="{{ url_for('login') }}" method="get">
+            <input type="hidden" name="session_id" value="{{ session_id }}">
+            <div class="checkbox-group">
+                <h3>Select Weeks:</h3>
+                {% for week in weeks %}
+                    <label>
+                        <input type="checkbox" name="weeks" value="{{ week }}" {% if week in session.get('weeks', []) %}checked{% endif %}> {{ week }}
+                    </label><br>
+                {% endfor %}
+            </div>
+
+            <button class="start-button" type="submit">Start Viva</button>
+        </form>
+    </div>
+</body>
+</html>

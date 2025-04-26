@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+        .home-btn {
+        display: inline-block;
+        padding: 10px 15px;
+        background-color: #007BFF;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+
+    .home-btn:hover {
+        background-color: #0056b3;
+    }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="/home" class="home-btn">Home</a>
+
+        <h2>Faculty Dashboard</h2>
+
+        <button class="btn" onclick="location.href='/faculty_upload'">Upload PDF</button>
+
+        <button class="btn" onclick="location.href='/generate_questions'">Generate Questions</button>
+
+        <button class="btn" onclick="location.href='/generate_final_marks'">Viva Marks</button>
+
+    </div>
+
+</body>
+</html>

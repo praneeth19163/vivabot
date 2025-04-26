@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viva Questions</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 50%;
+            position: relative;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .question-box {
+            font-size: 18px;
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #007BFF;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        .info-box {
+            font-size: 16px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #e9ecef;
+        }
+        textarea {
+            width: calc(100% - 60px);
+            height: 100px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            resize: none;
+            display: inline-block;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .btn {
+            width: 45%;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .btn-skip {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-next {
+            background-color: #007BFF;
+            color: white;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Microphone Button */
+        .mic-container {
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+        .mic-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid #007BFF;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .mic-btn.active {
+            border-color: #ff0000;
+            box-shadow: 0px 0px 15px rgba(255, 0, 0, 0.7);
+        }
+        .mic-btn i {
+            font-size: 24px;
+            color: #007BFF; /* Ensure icon is visible */
+            display: block; /* Make sure it's displayed */
+        }
+        .mic-btn.active i {
+            color: #ff0000;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .loading-screen .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #007BFF;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner"></div>
+        <p>Loading next question...</p>
+    </div>
+
+    <div class="container">
+        <h1>Welcome to the Viva Session</h1>
+        <h2>Subject: {{ subject }}</h2>
+        <h3>Selected Weeks: {{ weeks | join(', ') }}</h3>
+
+        <div class="question-box">
+            <strong>Question {{ question_number }}:</strong> {{ question['question'] }}
+        </div>
+        <div class="info-box">
+            <strong>Difficulty Level:</strong> 
+            {% if question['proficiency_level'] == 'Easy' %}
+                "BTL1"
+            {% elif question['proficiency_level'] == 'Medium' %}
+                "BTL2"
+            {% elif question['proficiency_level'] == 'Hard' %}
+                "BTL3"
+            {% endif %}<br>
+            <strong>Marks for this Question:</strong> 
+            {% if question['proficiency_level'] == 'Easy' %}
+                0.5
+            {% elif question['proficiency_level'] == 'Medium' %}
+                1
+            {% elif question['proficiency_level'] == 'Hard' %}
+                1.5
+            {% endif %}
+        </div>
+
+        <form method="POST" onsubmit="showLoading()">
+            <div style="display: flex; align-items: center;">
+                <textarea id="answer" name="answer" placeholder="Enter your answer here..." oninput="enableNextButton()"></textarea>
+                <div class="mic-container">
+                    <div id="micBtn" class="mic-btn" onclick="startSpeechRecognition()">
+                        <i class="fa-solid fa-microphone"></i> <!-- Corrected icon class -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button type="submit" name="skip" class="btn btn-skip">Skip</button>
+                <button type="submit" name="next" id="nextBtn" class="btn btn-next" disabled>Next</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function enableNextButton() {
+            let answer = document.getElementById("answer").value.trim();
+            let nextBtn = document.getElementById("nextBtn");
+            if (answer.length > 0) {
+                nextBtn.disabled = false;
+                nextBtn.style.opacity = "1";
+                nextBtn.style.cursor = "pointer";
+            } else {
+                nextBtn.disabled = true;
+                nextBtn.style.opacity = "0.5";
+                nextBtn.style.cursor = "not-allowed";
+            }
+        }
+
+        function startSpeechRecognition() {
+            var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            var micBtn = document.getElementById("micBtn");
+
+            recognition.lang = 'en-US';
+            recognition.start();
+            micBtn.classList.add("active");
+
+            recognition.onresult = function(event) {
+                document.getElementById("answer").value = event.results[0][0].transcript;
+                enableNextButton();
+            };
+
+            recognition.onend = function() {
+                micBtn.classList.remove("active");
+            };
+        }
+
+        function showLoading() {
+            document.getElementById("loadingScreen").style.display = "flex";
+        }
+
+        window.onload = function() {
+            document.getElementById("loadingScreen").style.display = "none";
+        };
+    </script>
+
+</body>
+</html>
