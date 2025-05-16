@@ -1020,7 +1020,6 @@ def generate_final_marks():
         output_path = os.path.join("student_marks", output_file)
         final_df.to_excel(output_path, index=False)
 
-        # Fetch faculty email (assuming a single session per class/subject exists)
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
         cursor.execute("SELECT faculty_email FROM viva_sessions WHERE class_name = %s AND subject = %s ORDER BY id DESC LIMIT 1",
@@ -1043,7 +1042,7 @@ def generate_final_marks():
 
 def send_final_marks_email(recipient_email, attachment_path):
     sender_email = "lekhya1854@gmail.com"
-    sender_password = "eohx qxct qiev sqhb"  # Use app password here
+    sender_password = "eohx qxct qiev sqhb"  
 
     msg = EmailMessage()
     msg["Subject"] = "Final Viva Marks Report"
